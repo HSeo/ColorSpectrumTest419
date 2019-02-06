@@ -1,8 +1,18 @@
 #include "NativeWidgetHostColorSpectrum.h"
 #include "SColorSpectrum.h"
 
-UNativeWidgetHostColorSpectrum::UNativeWidgetHostColorSpectrum(const FObjectInitializer& ObjectInitializer) : UNativeWidgetHost(ObjectInitializer) {
-  TSharedRef<SColorSpectrum> color_spectrum = SNew(SColorSpectrum);
+UNativeWidgetHostColorSpectrum::UNativeWidgetHostColorSpectrum(const FObjectInitializer& ObjectInitializer) : UNativeWidgetHost(ObjectInitializer) {}
 
-  SetContent(color_spectrum);
+void UNativeWidgetHostColorSpectrum::ReleaseSlateResources(bool bReleaseChildren) {
+  Super::ReleaseSlateResources(bReleaseChildren);
+  color_spectrum_.Reset();
+}
+
+TSharedRef<SWidget> UNativeWidgetHostColorSpectrum::RebuildWidget() {
+  SAssignNew(color_spectrum_, SColorSpectrum);
+  SetContent(color_spectrum_.ToSharedRef());
+
+  //UNativeWidgetHost::RebuildWidget(); // Unnecessary?
+
+  return GetContent().ToSharedRef();
 }
